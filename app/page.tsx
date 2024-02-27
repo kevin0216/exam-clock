@@ -32,7 +32,7 @@ import { faCircle as faCircleRegular } from "@fortawesome/free-regular-svg-icons
 import ImportDialog from "@components/importDialog";
 
 const Home: FC = () => {
-  const version = "0.3.1";
+  const version = "0.3.2";
   const versionString = `Version ${version.slice(0, 3)}${
     version.slice(4) == "0" ? "" : ` Update ${version.slice(4)}`
   }`;
@@ -265,10 +265,10 @@ const Home: FC = () => {
           &nbsp;@kevin0216
         </a>
         {screenfull.isFullscreen ? (
-          <a className="ml-2 px-1 rounded bg-orange-500 dark:bg-orange-600 text-white">
-            <FontAwesomeIcon icon={faExpand} className={"sm:mr-1"} />
+          <a className="ml-2 px-1 rounded bg-blue-400 dark:bg-blue-500 text-white">
             <p className="max-sm:hidden">
-              目前正在全螢幕模式下，按 F11, Esc 或右方按鈕來離開
+              <FontAwesomeIcon icon={faExpand} className={"sm:mr-1"} />
+              按 F11, Esc 或右方按鈕來離開
             </p>
           </a>
         ) : (
