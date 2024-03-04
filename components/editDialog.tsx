@@ -26,6 +26,10 @@ interface EditDialogProps {
   initialData?: EditingData;
 }
 
+var actualAttendanceNum = 0;
+var expectedAttendanceNum = 0;
+var absentNum = 0;
+
 const EditDialog: FC<EditDialogProps> = ({
   isOpen,
   onClose,
@@ -64,6 +68,10 @@ const EditDialog: FC<EditDialogProps> = ({
 
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
 
+  actualAttendanceNum = data.attendanceData.actualAttendance;
+  absentNum = data.attendanceData.absentSeatNumbers.split(",").length - 1;
+  expectedAttendanceNum = data.attendanceData.expectedAttendance;
+
   const handleSaveClick = () => {
     onSave(data);
   };
@@ -89,6 +97,8 @@ const EditDialog: FC<EditDialogProps> = ({
   const handleExpectedAttendanceChange = (value: number) => {
     const newData = { ...data };
     newData.attendanceData.expectedAttendance = value;
+    absentNum = newData.attendanceData.absentSeatNumbers.split(",").length - 1;
+    actualAttendanceNum = newData.attendanceData.expectedAttendance - absentNum;
     setData(newData);
   };
 
@@ -108,8 +118,11 @@ const EditDialog: FC<EditDialogProps> = ({
 
     absentSeatNumbers.sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
 
-    newData.attendanceData.actualAttendance =
+    newData.attendanceData.actualAttendance = actualAttendanceNum =
       newData.attendanceData.expectedAttendance - absentSeatNumbers.length;
+    absentNum = absentSeatNumbers.length;
+    expectedAttendanceNum = newData.attendanceData.expectedAttendance;
+    
     newData.attendanceData.absentSeatNumbers = absentSeatNumbers.join(",");
     setData(newData);
   };
@@ -378,13 +391,9 @@ const EditDialog: FC<EditDialogProps> = ({
                             <input
                               type="string"
                               disabled={true}
-                              value={`${data.attendanceData.actualAttendance}${
-                                data.attendanceData.actualAttendance !=
-                                data.attendanceData.expectedAttendance
-                                  ? ` (缺 ${
-                                      data.attendanceData.expectedAttendance -
-                                      data.attendanceData.actualAttendance
-                                    } 人)`
+                              value={`${actualAttendanceNum}${
+                                actualAttendanceNum != expectedAttendanceNum
+                                  ? ` (缺 ${absentNum} 人)`
                                   : ``
                               }`}
                               className="block w-32 mt-1 px-3 py-2 rounded-md bg-gray-100 border border-gray-300 dark:border-slate-600 dark:bg-slate-600 dark:placeholder-white text-gray-900 dark:text-white placeholder-gray-500 focus:dark:border-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
