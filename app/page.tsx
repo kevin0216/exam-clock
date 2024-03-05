@@ -189,7 +189,7 @@ const Home: FC = () => {
     setIsImportDialogOpen(false);
   };
 
-  const handlePrefferedThemeChange = () => {
+  const handlePreferredThemeChange = () => {
     if (!localStorage.getItem("theme")) {
       localStorage.setItem("theme", "light");
     } else {
@@ -286,7 +286,7 @@ const Home: FC = () => {
         </button>
         <button
           className="ml-3 text-end text-gray-400 hover:text-gray-600 hover:dark:text-gray-400 dark:text-gray-300 active:text-gray-500"
-          onClick={() => handlePrefferedThemeChange()}
+          onClick={() => handlePreferredThemeChange()}
         >
           <FontAwesomeIcon
             icon={

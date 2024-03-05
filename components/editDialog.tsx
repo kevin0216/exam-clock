@@ -26,9 +26,9 @@ interface EditDialogProps {
   initialData?: EditingData;
 }
 
-var actualAttendanceNum = 0;
-var expectedAttendanceNum = 0;
-var absentNum = 0;
+let actualAttendanceNum = 0;
+let expectedAttendanceNum = 0;
+let absentNum = 0;
 
 const EditDialog: FC<EditDialogProps> = ({
   isOpen,
@@ -69,7 +69,7 @@ const EditDialog: FC<EditDialogProps> = ({
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
 
   actualAttendanceNum = data.attendanceData.actualAttendance;
-  absentNum = data.attendanceData.absentSeatNumbers.split(",").length - 1;
+  absentNum = data.attendanceData.absentSeatNumbers.split(",").length;
   expectedAttendanceNum = data.attendanceData.expectedAttendance;
 
   const handleSaveClick = () => {
@@ -96,7 +96,7 @@ const EditDialog: FC<EditDialogProps> = ({
 
   const handleExpectedAttendanceChange = (value: number) => {
     const newData = { ...data };
-    newData.attendanceData.expectedAttendance = value;
+    newData.attendanceData.expectedAttendance = expectedAttendanceNum = value;
     absentNum = newData.attendanceData.absentSeatNumbers.split(",").length - 1;
     actualAttendanceNum = newData.attendanceData.expectedAttendance - absentNum;
     setData(newData);
@@ -104,7 +104,7 @@ const EditDialog: FC<EditDialogProps> = ({
 
   const handleAbsentSeatNumbersChange = (number: number, isAbsent: number) => {
     const newData = { ...data };
-    var absentSeatNumbers = newData.attendanceData.absentSeatNumbers.split(",");
+    let absentSeatNumbers = newData.attendanceData.absentSeatNumbers.split(",");
 
     if (isAbsent === -1) {
       absentSeatNumbers.push(number.toString());
@@ -185,7 +185,7 @@ const EditDialog: FC<EditDialogProps> = ({
 
   function getNumberButton(expectedAttendance: number) {
     let numberGrid = [];
-    var i: number;
+    let i: number;
 
     for (i = 0; i < expectedAttendance; i++) {
       numberGrid.push(i + 1);
