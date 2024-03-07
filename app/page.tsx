@@ -27,8 +27,12 @@ import {
   faCompress,
   faFileImport,
   faPenToSquare,
+  faSquareCheck,
 } from "@fortawesome/free-solid-svg-icons";
-import { faCircle as faCircleRegular } from "@fortawesome/free-regular-svg-icons";
+import {
+  faCircle as faCircleRegular,
+  faSquare as faSquareRegular,
+} from "@fortawesome/free-regular-svg-icons";
 import ImportDialog from "@components/importDialog";
 
 const Home: FC = () => {
@@ -206,6 +210,14 @@ const Home: FC = () => {
     setTheme();
   };
 
+  const handleFastModeChange = () => {
+    if (!localStorage.getItem("fastmode")) {
+      localStorage.setItem("fastmode", "true");
+    } else {
+      localStorage.removeItem("fastmode");
+    }
+  }
+
   const handleFullScreen = () => {
     if (screenfull.isEnabled) {
       screenfull.toggle();
@@ -249,7 +261,8 @@ const Home: FC = () => {
 
   return (
     <>
-      <div className="transition-colors absolute flex w-full top-0 left-0 p-2 text-xs text-gray-400 dark:text-gray-300 font-bold">
+      <div
+        className="transition-colors absolute flex w-full top-0 left-0 p-2 text-xs text-gray-400 dark:text-gray-300 font-bold">
         Maintain By{" "}
         <a
           href="https://github.com/smitug01"
@@ -267,7 +280,7 @@ const Home: FC = () => {
         {screenfull.isFullscreen ? (
           <a className="ml-2 px-1 rounded bg-blue-400 dark:bg-blue-500 text-white">
             <p className="max-sm:hidden">
-              <FontAwesomeIcon icon={faExpand} className={"sm:mr-1"} />
+              <FontAwesomeIcon icon={faExpand} className={"sm:mr-1"}/>
               按 F11, Esc 或右方按鈕來離開
             </p>
           </a>
@@ -286,6 +299,20 @@ const Home: FC = () => {
         </button>
         <button
           className="ml-3 text-end text-gray-400 hover:text-gray-600 hover:dark:text-gray-400 dark:text-gray-300 active:text-gray-500"
+          onClick={() => handleFastModeChange()}
+        >
+          <FontAwesomeIcon
+            icon={
+              localStorage.getItem("fastmode")
+                ? faSquareCheck
+                : faSquareRegular
+            }
+            className={"mr-1"}
+          />
+          低效能模式
+        </button>
+        <button
+          className="ml-3 text-end text-gray-400 hover:text-gray-600 hover:dark:text-gray-400 dark:text-gray-300 active:text-gray-500"
           onClick={() => handlePreferredThemeChange()}
         >
           <FontAwesomeIcon
@@ -293,26 +320,26 @@ const Home: FC = () => {
               !localStorage.getItem("theme")
                 ? faDisplay
                 : localStorage.getItem("theme") === "dark"
-                ? faMoon
-                : faSun
+                  ? faMoon
+                  : faSun
             }
             className={"mr-1"}
           />
           {!localStorage.getItem("theme")
             ? `系統 (${
-                document.documentElement.classList.contains("dark")
-                  ? "暗色"
-                  : "亮色"
-              })`
+              document.documentElement.classList.contains("dark")
+                ? "暗色"
+                : "亮色"
+            })`
             : localStorage.getItem("theme") === "dark"
-            ? "暗色"
-            : "亮色"}
+              ? "暗色"
+              : "亮色"}
         </button>
         <a
           href={`https://github.com/smitug01/exam-clock/releases/tag/v${version}`}
           className="ml-3 text-end text-gray-400 hover:text-gray-600 hover:dark:text-gray-400 dark:text-gray-300 active:text-gray-500"
         >
-          <FontAwesomeIcon icon={faCodeBranch} className={"mr-1"} />
+          <FontAwesomeIcon icon={faCodeBranch} className={"mr-1"}/>
           {versionString} ({version})
         </a>
       </div>

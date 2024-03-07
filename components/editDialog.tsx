@@ -15,9 +15,16 @@ import {
   faPlusCircle,
   faRotateRight,
   faWarning,
+  faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { EditingData, ImportExamData } from "@/lib/interfaces";
+
+const defaultData = [
+  { id: 1, subject: "數學", startTime: "01:00", endTime: "02:00" },
+  { id: 2, subject: "國文", startTime: "03:00", endTime: "04:00" },
+  { id: 3, subject: "自然", startTime: "05:00", endTime: "06:00" },
+];
 
 interface EditDialogProps {
   isOpen: boolean;
@@ -25,10 +32,6 @@ interface EditDialogProps {
   onSave: (data: EditingData) => void;
   initialData?: EditingData;
 }
-
-let actualAttendanceNum = 0;
-let expectedAttendanceNum = 0;
-let absentNum = 0;
 
 const EditDialog: FC<EditDialogProps> = ({
   isOpen,
@@ -67,10 +70,10 @@ const EditDialog: FC<EditDialogProps> = ({
   }, [initialData]);
 
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
-
-  actualAttendanceNum = data.attendanceData.actualAttendance;
-  absentNum = data.attendanceData.absentSeatNumbers.split(",").length;
-  expectedAttendanceNum = data.attendanceData.expectedAttendance;
+  let actualAttendanceNum = data.attendanceData.actualAttendance;
+  let expectedAttendanceNum = data.attendanceData.expectedAttendance;
+  let absentNum = data.attendanceData.absentSeatNumbers.split(",").length;
+  const fastModeEnabled = () => !!localStorage.getItem("fastMode");
 
   const handleSaveClick = () => {
     onSave(data);
@@ -139,19 +142,13 @@ const EditDialog: FC<EditDialogProps> = ({
     newData.startTimes = [];
     newData.endTimes = [];
 
-    fetch("/api/import?exam=1")
-      .then((response) => response.json())
-      .then((data) => {
-        data.map((exam: ImportExamData) => {
+    defaultData.map((exam: ImportExamData) => {
           newData.subjects.push(exam.subject);
           newData.startTimes.push(exam.startTime);
           newData.endTimes.push(exam.endTime);
-        });
-        setData(newData);
-      })
-      .catch((error) => {
-        console.error("Error importing exam data:", error);
-      });
+    });
+
+    setData(newData);
   };
 
   useEffect(() => {
@@ -200,7 +197,7 @@ const EditDialog: FC<EditDialogProps> = ({
             .indexOf(`${number}`) != -1
             ? "text-white bg-red-500 dark:bg-red-600 line-through"
             : "text-black dark:text-white bg-white dark:bg-slate-700"
-        } w-full mr-1 mb-1 transition-all inline-flex justify-center rounded-md border dark:border-slate-600 shadow-sm px-4 py-2 text-normal font-semibold active:scale-90 sm:w-auto sm:text-sm`}
+        } w-full mr-1 mb-1 ${fastModeEnabled() ? "transition-all" : ""} inline-flex justify-center rounded-md border dark:border-slate-600 shadow-sm px-4 py-2 text-normal font-semibold active:scale-90 sm:w-auto sm:text-sm`}
         onClick={() =>
           handleAbsentSeatNumbersChange(
             number,
@@ -229,7 +226,7 @@ const EditDialog: FC<EditDialogProps> = ({
             leaveTo="opacity-0"
           >
             <div
-              className="fixed inset-0 backdrop-blur-sm transition-opacity"
+              className={`fixed inset-0 ${fastModeEnabled() ? "" : "backdrop-blur-sm"} transition-opacity`}
               aria-hidden={true}
             >
               <div className="absolute inset-0 dark:bg-slate-800 bg-gray-500 opacity-75" />
